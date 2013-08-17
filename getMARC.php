@@ -17,7 +17,11 @@ if ($alephFindResults->error) {
 } else {
 	$setNum = $alephFindResults->set_number;	
 	$alephMarcXML = alephPresent($setNum); // calls the alephPresent function in alephXfunctions.php
-	print_r($alephMarcXML); // this line for testing. Remove for production. 
+	//print_r($alephMarcXML); // this line for testing. Remove for production. 
 }// end if
-   
+
+$marcData = array("Main Title" => "","Alternative Title" => "","Translated Title" => "","Uniform Title" => "","Creator" => "","Contributor" => "","Statement of Responsibility" => "","Genre" => "","Publisher" => "","Place of Origin" => "","Date Created" => "","Date Issued" => "","Copyright Date" => "","Abstract" => "","Note" => "","Topical Subject" => "","Geographic Subject" => "","Temporal Subject" => "","Occupation Subject" => "","Person Subject" => "","Corporate Subject" => "","Family Subject" => "","Title Subject" => "","Collection" => "","Publish" => "","Hidden"
+);
+echo "</br>";
+print_r($marcData);   
 ?>
