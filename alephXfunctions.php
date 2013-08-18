@@ -6,6 +6,17 @@
  * An X-Services "Present" request returns MARCXML for a given set_entry in a set_number. The alephPresent function
  * handles this step.
  */
+ 
+function buildFindURL($request, $code, $base = "CP", $op = "find") {
+	$findURL = "http://catalog.umd.edu/X?request=".$request."&op=".$op."&code=".$code."&base=".$base;
+	return($findURL);
+}
+
+function buildPresentURL($alephSetNumber, $setEntry = 1) {
+	$presentURL = "http://catalog.umd.edu/X?set_no=".$alephSetNumber."&set_entry=".$setEntry."&op=present";
+	return($presentURL);
+}
+
 function alephFind($request, $code, $base = "CP", $op = "find") {
 	/* Build the url for Aleph x-services find request. Returns set number if successful */	
 	$findURL = "http://catalog.umd.edu/X?request=".$request."&op=".$op."&code=".$code."&base=".$base;	
