@@ -36,5 +36,48 @@ $author = $alephMarcXML->xpath("/present/record/metadata/oai_marc/varfield[@id='
 print_r($author);
 echo "</br>";
 echo $author[0];
+$author = $author[0];
+$author = "\"".$author."\"";
+echo "</br>";
+echo "Author with quotes: ".$author;
+echo "</br>";
+echo $alephNum;
+echo "</br>";
+$csvData = array($author, $alephNum);
+print_r($csvData);
+
+/*
+$fp = fopen("sysNums.txt", w);
+	if ($fp) {
+		echo "So far so good </br>";
+	}
+	else {
+		echo "Cannot open file.</br>";
+	} //end if
+
+fwrite($fp, $alephNum);
+fclose($fp);
+
+*/
+
+$fp = fopen("csvtest.csv", w);
+	if ($fp) {
+		echo "So far SO good </br>";
+	}
+	else {
+		echo "Cannot open file.</br>";
+	} //end if
+
+$putTest = fputcsv($fp, $csvData);
+	if ($putTest) {
+		echo "File put.";
+	}
+	else {
+		echo "No dice on the putting";
+	}
+
+
+fclose($fp);
+
 //$alephPresentXML->record->metadata->oai_marc->varfield
 ?>
