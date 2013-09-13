@@ -14,6 +14,18 @@ function getBarcodes(){
 	return($barcodes);	
 } // end getBarcodes
 
+function getCallNums(){
+	$callNums = array();		
+	$fp = fopen("callnums.txt", 'r');
+	while (!feof($fp)){
+		$callNum = trim(fgets($fp));	
+		array_push($callNums, $callNum);
+	} // end while
+	fclose($fp);
+	return($callNums);	
+} // end getBarcodes
+
+
 /* retrieve Aleph system numbers corresponding to a list of barcodes and store them in an array */
 function getAlephNums($barcodes){
 	$alephNums = array();
@@ -67,9 +79,13 @@ function generateCallNums($start, $end) {
 	
 } // end generateCallNums
 
-if ($callNums = generateCallNums(20, 29)) {
+$callNums = getCallNums();
+
+/*
+if ($callNums = generateCallNums(1, 10)) {
 	echo addCallNums($callNums);
 }
+ * /
 
 
  
