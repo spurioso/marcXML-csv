@@ -1,6 +1,7 @@
 <?php
 
 require "alephXfunctions.php";
+include "getOCLCnums.php";
 
 /* retrieve a list of barcodes from a text file and save them as an array */
 function getBarcodes(){
