@@ -37,11 +37,45 @@ function addSysNums($alephNums){
 		fputs($fp, $alephNum."\n");
 		fclose($fp);	
 	}	// end foreach	
-	echo "File written";	
+	return("File written");	
 } // end addSysNums
 
+function addCallNums($callNums){
+	if (file_exists("callnums.txt")) {
+		unlink("callnums.txt");
+	} // end if	
+	foreach ($callNums as $callNum) {					
+		$fp = fopen("callnums.txt", 'a');
+		fputs($fp, $callNum."\n");
+		fclose($fp);	
+	}	// end foreach	
+	return("File written");	
+} // end addSysNums
+
+function generateCallNums($start, $end) {
+	if ($end >= $start) {
+		$callNums = array ();
+		for ($i=$start; $i <= $end ; $i++) { 
+			$callNum = "MCD{$i}";
+			array_push($callNums, $callNum);
+	} //end for
+	return($callNums);	
+	} else {
+		echo "Second number must be greater than the first.";
+		return(False);
+	} // end if
+	
+} // end generateCallNums
+
+if ($callNums = generateCallNums(20, 29)) {
+	echo addCallNums($callNums);
+}
+
+
+ 
+ /*
 $barcodes = getBarcodes();
 $alephNums = getAlephNums($barcodes);
 addSysNums($alephNums);
-
+*/
 ?>
