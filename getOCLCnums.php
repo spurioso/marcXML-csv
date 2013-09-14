@@ -1,10 +1,13 @@
 <?php
+
+/* Retrieves a list of OCLC numbers from a Worldcat list and stores them as an array. Does some other things too. Need to clean up.*/
+
 $worldcatList = "https://umaryland.worldcat.org/profiles/shenrywcl/lists/639480/rss"; //put your list URL here.
 
 $rssxml = getOCLClist($worldcatList);
 $books = getBooks($rssxml);
 $oclcNums = getOCLCnums($books);
-//print_r($oclcNums);    
+print_r($oclcNums);    
     
     function getOCLClist($worldcatList) {
     	$rss = file_get_contents ($worldcatList); //load the list contents	
