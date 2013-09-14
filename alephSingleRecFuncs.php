@@ -1,47 +1,6 @@
 <?php
 
 include("alephXfunctions.php");
-
-// Tests
-
-/*
-print_r(singleRecGetMARCfromCallNum("MCD10000"));
-*/
-
-/*
-$sysNum = singleRecGetSysNumFromCallNum("MCD10000");
-echo $sysNum;
-*/
-
-/*
-$oclc = "173136007";
-$sysNum = singleRecGetSysNumFromOCLC($oclc);
-echo $sysNum;
-*/
-
-/*
-$oclc = "173136007";
-$marcXML = singleRecGetMARCfromOCLC($oclc);
-print_r ($marcXML);
-*/
- 
-/*
-include("getOCLCnums.php");
-$oclcNums = getOCLCnums($books);
-foreach ($oclcNums as $oclc) {
-	$sysNum = singleRecGetSysNumFromOCLC($oclc);
-	echo "SysNum: ".$sysNum." OCLC: ".$oclc."</br>";
- 	
-}
-*/
-
-/*
-$sysNum = singleRecGetSysNumFromBar("31430057638498");
-echo $sysNum;
-echo "</br>";
-$marcXML = singleRecGetMARCfromBar("31430057638498");
-print_r($marcXML);
-*/
  
 /* Returns MarcXML for a single record. Requires a query and the code for the query. If more than one record matches the query
 the first result is returned. Best uses of this function are retrieving a record based on barcode, OCLC number, or Aleph
@@ -104,58 +63,119 @@ function singleRecGetMARCfromBar($barcode) {
 	return ($marcXML);
 }
 
-/* *** Functions For Retrieving Info from an OCLC number *** */
+/* *** Functions For preparing OCLC numbers for Aleph X-sevices *** */
 
 // OCLC numbers have to be 8 digits for sending to Aleph. If less than 8, add zeroes.
-function padOCLCnum($oclc) {
+function OCLCpadNum($oclc) {
 	if (strlen($oclc) < 8) {
 		if (strlen($oclc) == 6) {
-			$oclcAleph = "00".$oclc;			
+			$oclcPad = "00".$oclc;			
 		} elseif (strlen($oclc) == 7) {
-			$oclcAleph = "0".$oclc;			
+			$oclcPad = "0".$oclc;			
 		}		
 	} else {
-		$oclcAleph = $oclc;
+		$oclcPad = $oclc;
 	}
-	return($oclcAleph);
+	return($oclcPad);
 }
+
+// OCLC nums sent to aleph need to be preceded by "ocn" or "ocm". 
+function OCLCtestPrefix($oclcPad) {
+	$prefix = "ocm";		
+	$oclcPre = $prefix.$oclcPad;	
+	if ($test = alephTestForSetNum($oclcPre, "035")) {
+		return($oclcPre);		
+	} else {			
+		$prefix = "ocn";		
+		$oclcPre = $prefix.$oclcPad;		
+		if ($test = alephTestForSetNum($oclcPre, "035")) {
+			return($oclcPre);			
+		} // end if
+	} // end if
+} // end function
+
+// Prepares OCLC number for Aleph-X-services. Pads OCLC nums shorter than 8 digits, and adds proper prefix.
+function OCLCforAlephX($oclc) {
+	$oclcPad = OCLCpadNum($oclc);	
+	$oclcForAlephX = OCLCtestPrefix($oclcPad);	
+	return($oclcForAlephX);
+}
+
+/* *** Functions for retrieving information from OCLC numbers *** */
 
 function singleRecGetSysNumFromOCLC($oclc) {		
 	$code = "035";
-	$oclcAleph = padOCLCnum($oclc);	
-	$prefix = "ocm";	
-	$oclcPre = $prefix.$oclcAleph;
-	if ($test = alephTestForSetNum($oclcPre, $code)) {
-		$sysNum = singleRecGetSysNum($oclcPre, $code);
-		return($sysNum);
-	} else {			
-		$prefix = "ocn";		
-		$oclcPre = $prefix.$oclcAleph;		
-		if ($test = alephTestForSetNum($oclcPre, $code)) {
-			$sysNum = singleRecGetSysNum($oclcPre, $code);
-			return($sysNum);			
-		} // end if
-	} // end if
-	
-} // end function
+	$oclcForAlephX = OCLCforAlephX($oclc);
+	$sysNum = singleRecGetSysNum($oclcForAlephX, $code);
+	return ($sysNum);
+} // end function	
 
 function singleRecGetMARCfromOCLC($oclc) {		
 	$code = "035";
-	$oclcAleph = padOCLCnum($oclc);
-	$prefix = "ocm";	
-	$oclcPre = $prefix.$oclcAleph;
-	if ($test = alephTestForSetNum($oclcPre, $code)) {
-		$marcXML = alephSingleRec($oclcPre, $code);
-		return($marcXML);
-	} else {			
-		$prefix = "ocn";		
-		$oclcPre = $prefix.$oclcAleph;		
-		if ($test = alephTestForSetNum($oclcPre, $code)) {
-			$marcXML = alephSingleRec($oclcPre, $code);
-			return($marcXML);
-		} // end if
-	} // end if
-	
+	$oclcForAlephX = OCLCforAlephX($oclc);
+	$marcXML = alephSingleRec($oclcForAlephX, $code);
+	return($marcXML);	
 } // end function
+
+// Tests
+
+$oclcNums = array ("34919814", "428436794", "2648489");
+
+/*
+$oclc = $oclcNums[2];
+$marcXML = singleRecGetMARCfromOCLC($oclc);
+print_r ($marcXML);
+*/
+
+/*
+foreach ($oclcNums as $oclcNum) {
+	$sysNum = singleRecGetSysNumFromOCLC($oclcNum);
+	echo "OCLC: ".$oclcNum;
+	echo " Sys Num: ".$sysNum;	
+	echo "</br>";	
+}
+*/
+
+/*
+foreach ($oclcNums as $oclcNum) {
+	$oclcforaleph = OCLCforAlephX($oclcNum);
+	echo "OCLC: ".$oclcNum;
+	echo " OCLC for Aleph: ".$oclcforaleph;
+	echo "</br>";	
+}
+*/
+
+
+/*
+print_r(singleRecGetMARCfromCallNum("MCD10000"));
+*/
+
+/*
+$sysNum = singleRecGetSysNumFromCallNum("MCD10000");
+echo $sysNum;
+*/
+
+
+
+
+
+ 
+/*
+include("getOCLCnums.php");
+$oclcNums = getOCLCnums($books);
+foreach ($oclcNums as $oclc) {
+	$sysNum = singleRecGetSysNumFromOCLC($oclc);
+	echo "SysNum: ".$sysNum." OCLC: ".$oclc."</br>";
+ 	
+}
+*/
+
+/*
+$sysNum = singleRecGetSysNumFromBar("31430057638498");
+echo $sysNum;
+echo "</br>";
+$marcXML = singleRecGetMARCfromBar("31430057638498");
+print_r($marcXML);
+*/
 
 ?>
