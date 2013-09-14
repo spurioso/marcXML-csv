@@ -5,6 +5,15 @@ include("alephXfunctions.php");
 // Tests
 
 /*
+print_r(singleRecGetMARCfromCallNum("MCD10000"));
+*/
+
+/*
+$sysNum = singleRecGetSysNumFromCallNum("MCD10000");
+echo $sysNum;
+*/
+
+/*
 $oclc = "173136007";
 $sysNum = singleRecGetSysNumFromOCLC($oclc);
 echo $sysNum;
@@ -67,6 +76,19 @@ function singleRecGetSysNum($query, $code) {
 	return($sysNum);
 }
 
+/* *** Functions For Retrieving Info from a non-LC call number *** */
+
+// Return an Aleph system number for a given non-LC call number
+function singleRecGetSysNumFromCallNum($callNum) {
+	$sysNum = singleRecGetSysNum($callNum, "CNL");
+	return($sysNum);
+}
+
+// Return MARCXML for a given non-LC call number
+function singleRecGetMARCfromCallNum($callNum) {
+	$marcXML = alephSingleRec($callNum, "CNL");
+	return ($marcXML);
+}
 
 /* *** Functions For Retrieving Info from a Barcode *** */
 
