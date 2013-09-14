@@ -55,7 +55,7 @@ function alephSingleRec($query, $code) {
 	return($presentXML);	
 }
 
-// Tests to see if a set number was returne (i.e. was the search successful. Probably should move to alephXfunctions)
+// Tests to see if a set number was returned (i.e. was the search successful. Probably should move to alephXfunctions)
 function alephTestForSetNum($query, $code) {
 	$findURL = alephXbuildFindURL($query, $code);	
 	$findXML = alephXfind($findURL);	
