@@ -15,6 +15,7 @@ function getBarcodes(){
 	return($barcodes);	
 } // end getBarcodes
 
+// retrieve a list of call numbers from  a text file and store tham as an array
 function getCallNums(){
 	$callNums = array();		
 	$fp = fopen("callnums.txt", 'r');
@@ -80,7 +81,11 @@ function generateCallNums($start, $end) {
 	
 } // end generateCallNums
 
-$callNums = getCallNums();
+$barcodes = getBarcodes();
+$alephNums = getAlephNums($barcodes);
+addSysNums($alephNums);
+
+// $callNums = getCallNums();
 
 /*
 if ($callNums = generateCallNums(1, 10)) {
@@ -89,10 +94,4 @@ if ($callNums = generateCallNums(1, 10)) {
  * /
 
 
- 
- /*
-$barcodes = getBarcodes();
-$alephNums = getAlephNums($barcodes);
-addSysNums($alephNums);
-*/
 ?>
