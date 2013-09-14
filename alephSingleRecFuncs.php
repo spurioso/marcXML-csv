@@ -6,6 +6,12 @@ include("alephXfunctions.php");
 
 /*
 $oclc = "173136007";
+$sysNum = singleRecGetSysNumFromOCLC($oclc);
+echo $sysNum;
+*/
+
+/*
+$oclc = "173136007";
 $marcXML = singleRecGetMARCfromOCLC($oclc);
 print_r ($marcXML);
 */
@@ -78,19 +84,23 @@ function singleRecGetMARCfromBar($barcode) {
 
 /* *** Functions For Retrieving Info from an OCLC number *** */
 
-
-function singleRecGetSysNumFromOCLC($oclc) {		
-	$code = "035";
+// OCLC numbers have to be 8 digits for sending to Aleph. If less than 8, add zeroes.
+function padOCLCnum($oclc) {
 	if (strlen($oclc) < 8) {
 		if (strlen($oclc) == 6) {
 			$oclcAleph = "00".$oclc;			
 		} elseif (strlen($oclc) == 7) {
-			$oclcAleph = "0".$oclc;
+			$oclcAleph = "0".$oclc;			
 		}		
 	} else {
 		$oclcAleph = $oclc;
 	}
-	
+	return($oclcAleph);
+}
+
+function singleRecGetSysNumFromOCLC($oclc) {		
+	$code = "035";
+	$oclcAleph = padOCLCnum($oclc);	
 	$prefix = "ocm";	
 	$oclcPre = $prefix.$oclcAleph;
 	if ($test = alephTestForSetNum($oclcPre, $code)) {
@@ -109,16 +119,7 @@ function singleRecGetSysNumFromOCLC($oclc) {
 
 function singleRecGetMARCfromOCLC($oclc) {		
 	$code = "035";
-	if (strlen($oclc) < 8) {
-		if (strlen($oclc) == 6) {
-			$oclcAleph = "00".$oclc;			
-		} elseif (strlen($oclc) == 7) {
-			$oclcAleph = "0".$oclc;
-		}		
-	} else {
-		$oclcAleph = $oclc;
-	}
-	
+	$oclcAleph = padOCLCnum($oclc);
 	$prefix = "ocm";	
 	$oclcPre = $prefix.$oclcAleph;
 	if ($test = alephTestForSetNum($oclcPre, $code)) {
